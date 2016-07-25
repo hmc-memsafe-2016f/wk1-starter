@@ -17,7 +17,7 @@ pub struct SinglyLinkedList<T> {
 }
 
 fn remove_first<T: Eq>(link: Link<T>, item: &T) -> (Link<T>, Option<T>) {
-    link.map_or( (None, None), |mut node| {
+    link.map_or((None, None), |mut node| {
         if *item == node.data {
             // See the comment in `pop_front` for why we need to `take` here
             (node.next.take(), Some(node.data))
@@ -33,11 +33,17 @@ fn remove_first<T: Eq>(link: Link<T>, item: &T) -> (Link<T>, Option<T>) {
 
 impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
     fn new() -> Self {
-        SinglyLinkedList { head: None, len: 0 }
+        SinglyLinkedList {
+            head: None,
+            len: 0,
+        }
     }
 
     fn push_front(&mut self, item: T) {
-        self.head = Some(Box::new(Node{data: item, next: self.head.take()}));
+        self.head = Some(Box::new(Node {
+            data: item,
+            next: self.head.take(),
+        }));
         self.len += 1;
     }
 
@@ -70,7 +76,9 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
         let head = self.head.take();
         let (new_head, removed) = remove_first(head, item);
         self.head = new_head;
-        if removed.is_some() { self.len -= 1; }
+        if removed.is_some() {
+            self.len -= 1;
+        }
         removed
     }
 
