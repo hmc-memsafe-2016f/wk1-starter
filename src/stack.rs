@@ -6,7 +6,7 @@
 use Stack;
 
 pub struct SinglyLinkedList<T> {
-    // ????
+    data: T // Probably not what you want
 }
 
 impl<T: Eq> Stack<T> for SinglyLinkedList<T> {

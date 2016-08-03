@@ -198,4 +198,18 @@ mod bonus {
             assert_expected_eq_actual!(None, s.pop_front());
         }
     }
+
+    mod mystery {
+        use super::super::{Stack,SinglyLinkedList};
+
+        #[test]
+        #[ignore]
+        fn wat() {
+            let mut s = SinglyLinkedList::new();
+            let magic = 1 * 1024 * 1024;
+            for i in 0..magic {
+                s.push_front(i);
+            }
+        }
+    }
 }
