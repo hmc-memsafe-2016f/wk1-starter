@@ -1,3 +1,9 @@
+// Alex Ozdemir <aozdemir@hmc.edu> // <- Your name should replace this line!
+// Starter code for HMC's MemorySafe, week 1
+//
+// The trait Stack, and a re-export of SinglyLinkedList, which implements it
+
+
 mod stack;
 
 pub use stack::SinglyLinkedList;
