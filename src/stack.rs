@@ -11,7 +11,7 @@ struct Node<T> {
     next: Link<T>,
 }
 
-pub struct SinglyLinkedList<T> {
+pub struct SinglyLinkedList<T: Eq> {
     head: Link<T>,
     len: usize,
 }
@@ -88,5 +88,11 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
             tmp.push_front(item);
         }
         *self = tmp;
+    }
+}
+
+impl<T: Eq> Drop for SinglyLinkedList<T> {
+    fn drop(&mut self) {
+        while let Some(_) = self.pop_front() { };
     }
 }
