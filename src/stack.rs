@@ -32,6 +32,7 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
 
     fn pop_front(&mut self) -> Option<T> {
         self.head.take().map(|n| {
+            assert!(self.size > 0);
             let node = *n;
             self.head = node.pointer;
             self.size -= 1;
@@ -48,10 +49,34 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
 
     fn len(&self) -> usize { self.size }
 
-    fn remove_first(&mut self, item: &T) -> Option<T> { None }
+    fn remove_first(&mut self, item: &T) -> Option<T> {
+        let mut list = SinglyLinkedList::new();
+        let mut result = None;
+        let mut result_found = false;
+
+        loop {
+            match self.head.take() {
+                Some(ref n) => {
+                    if !result_found && n.data == *item {
+                        result = self.pop_front();
+                        result_found = true;
+                    } else {
+                        list.push_front(self.pop_front().unwrap());
+                    }
+                },
+                None => break
+            }
+        }
+
+        list.reverse();
+        mem::swap(&mut self.head, &mut list.head);
+
+        result
+    }
 
     fn reverse(&mut self) {
         let mut list = SinglyLinkedList::<T>::new();
+
         loop {
             match self.head {
                 Some(_) => list.push_front(self.pop_front().unwrap()),
