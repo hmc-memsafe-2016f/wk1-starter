@@ -4,6 +4,7 @@
 // The implementation of SinglyLinkedList
 
 use Stack;
+use std::mem;
 
 pub struct SinglyLinkedList<T> {
     head: Option<Node<T>>,
@@ -12,7 +13,7 @@ pub struct SinglyLinkedList<T> {
 
 struct Node<T> {
     item : T,
-    next: Box<Option<Node<T>>>,
+    next: Option<Box<Node<T>>>,
 }
 
 impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
@@ -23,9 +24,9 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
 
     fn push_front(&mut self, item: T) {
         self.size += 1;
-        let mut node = Node { item: item, next: Box::new(None) };
+        let mut node = Node { item: item, next: None };
         if self.head.is_some() {
-            node.next = Box::new(self.head.take());
+            node.next = self.head.take().map(Box::new);
             self.head = Some(node)
         } else {
             self.head = Some(node)
@@ -37,7 +38,7 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
             None => (None, None),
             Some(head) => {
                 self.size += 1; 
-                (*head.next, Some(head.item))
+                (head.next.map(|next| *next), Some(head.item))
             }
         };
         self.head = next;
@@ -55,29 +56,8 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
         self.size
     }
 
-    fn remove_first(&mut self, target: &T) -> Option<T> { 
-        let prev_maybe : &mut Option<Node<T>> = &mut None;
-        let node_maybe = &mut self.head;
-
-        if node_maybe.is_none() {
-            return None;
-        }
-
-        while let &mut Some(ref mut node) = node_maybe {
-            if node.item == *target {
-                return match prev_maybe {
-                    &mut None => {
-                        self.head = None;
-                        node_maybe.take().map(|result_node| result_node.item)
-                    }
-                    &mut Some(ref mut node) => {
-                        None
-                    }
-                }
-                //return Some(node.item)
-            }
-        }
-        unimplemented!()
+    fn reverse(&mut self) { 
+        
     }
 
 }
