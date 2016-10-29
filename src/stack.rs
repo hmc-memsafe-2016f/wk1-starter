@@ -34,9 +34,9 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
         self.size += 1;
     }
 
-    fn pop_front(&mut self) -> Option<T> { 
+    fn pop_front(&mut self) -> Option<T> {
         match self.front.take() {
-            Some(n) => {
+            Some(mut n) => {
                 self.front = n.next.take();
                 self.size -= 1;
                 Some(n.value)
