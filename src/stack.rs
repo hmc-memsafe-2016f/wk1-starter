@@ -6,7 +6,7 @@
 use Stack;
 
 pub struct Node<T> {
-	data: T,
+    data: T,
     next: Option<Box<Node<T>>>
 }
 
@@ -17,10 +17,29 @@ pub struct SinglyLinkedList<T> {
 impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
     fn new() -> Self 
     {
-    	SinglyLinkedList{first: None}
+        SinglyLinkedList{first: None}
     }
-    fn push_front(&mut self, item: T) {unimplemented!()}
-    fn pop_front(&mut self) -> Option<T> {unimplemented!()}
+    fn push_front(&mut self, item: T)
+    {
+        let nextNode = match self.first.take() {
+            None => None,
+            Some(d) => Some(d)
+        };
+        self.first = Some(Box::<Node<T>>::new(Node{data: item, next: nextNode}));
+    }
+    fn pop_front(&mut self) -> Option<T>
+    {
+        let mut retOption = self.first.take();
+        let mut retVal : Option<T> = match retOption {
+            None => None,
+            Some(d) => Some(d.data)
+        };
+        self.first = match retOption {
+            None => None,
+            Some(d) => d.next.take()
+        };
+        retVal
+    }
     fn peek_front(&self) -> Option<&T> {unimplemented!()}
     fn len(&self) -> usize {unimplemented!()}
 }
