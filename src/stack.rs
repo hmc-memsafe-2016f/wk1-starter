@@ -5,10 +5,22 @@
 
 use Stack;
 
+pub struct Node<T> {
+	data: T,
+    next: Option<Box<Node<T>>>
+}
+
 pub struct SinglyLinkedList<T> {
-    data: T // Probably not what you want
+    first : Option<Box<Node<T>>>
 }
 
 impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
-    // ????
+    fn new() -> Self 
+    {
+    	SinglyLinkedList{first: None}
+    }
+    fn push_front(&mut self, item: T) {unimplemented!()}
+    fn pop_front(&mut self) -> Option<T> {unimplemented!()}
+    fn peek_front(&self) -> Option<&T> {unimplemented!()}
+    fn len(&self) -> usize {unimplemented!()}
 }
