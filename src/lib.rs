@@ -1,4 +1,4 @@
-// Alex Ozdemir <aozdemir@hmc.edu> // <- Your name should replace this line!
+// Adam Dunlap <adunlap@hmc.edu>
 // Starter code for HMC's MemorySafe, week 1
 //
 // The trait Stack, and a re-export of SinglyLinkedList, which implements it
