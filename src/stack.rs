@@ -22,21 +22,20 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
     }
 
     fn push_front(&mut self, item: T) {
-        let head = Box::new(Node {
-            pointer: self.head.take(),
-            data: item,
-        });
-        self.head = Some(head);
+        let old = mem::replace(&mut self.head, None);
+        self.head = Some(Box::new(Node { pointer: old, data: item }));
+        // let mut new_head = Node { pointer: None, data: item };
+        // mem::swap(&mut new_head.pointer, &mut self.head);
+        // self.head = Some(Box::new(new_head));
         self.size += 1;
     }
 
     fn pop_front(&mut self) -> Option<T> {
-        self.head.take().map(|n| {
+        self.head.take().map(|mut n| {
             assert!(self.size > 0);
-            let node = *n;
-            self.head = node.pointer;
+            self.head = n.pointer.take();
             self.size -= 1;
-            node.data
+            n.data
         })
     }
 
@@ -50,36 +49,69 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
     fn len(&self) -> usize { self.size }
 
     fn remove_first(&mut self, item: &T) -> Option<T> {
-        let ref mut current = self.head;
-        let mut previous: Option<Box<Node<T>>> = None;
+        // I wanted this to work, but it didn't :(
+        // let ref mut current = self.head;
+        // let mut previous: Option<Box<Node<T>>> = None;
+        //
+        // loop {
+        //     match current.take() {
+        //         Some(n) => {
+        //             let unwrapped = *n;
+        //             if unwrapped.data == *item {
+        //                 let ref mut prev_unwrapped = *previous.unwrap();
+        //                 mem::replace(&mut prev_unwrapped.pointer, unwrapped.pointer);
+        //                 return Some(unwrapped.data);
+        //             }
+        //
+        //             mem::replace(&mut previous, mem::replace(current, unwrapped.pointer));
+        //         },
+        //         None => return None
+        //     }
+        // }
 
-        loop {
-            match current.take() {
-                Some(n) => {
-                    let unwrapped = *n;
-                    if unwrapped.data == *item {
-                        let ref mut prev_unwrapped = *previous.unwrap();
-                        mem::replace(&mut prev_unwrapped.pointer, unwrapped.pointer);
-                        return Some(unwrapped.data);
-                    }
+        // Now I have to do it the ugly way - reverse the list, and remove the first
+        // occurence, then reverse again.
 
-                    mem::replace(&mut previous, mem::replace(current, unwrapped.pointer));
-                },
-                None => return None
+        let mut tmp = SinglyLinkedList::new();
+        let mut result : Option<T> = None;
+
+        while let Some(node) = self.pop_front() {
+            if node == *item {
+                result = Some(node);
+                break;
             }
+
+            tmp.push_front(node);
         }
+
+        while let Some(node) = self.pop_front() {
+            tmp.push_front(node);
+        }
+
+        tmp.reverse();
+        mem::swap(self, &mut tmp);
+
+        result
     }
 
     fn reverse(&mut self) {
-        let mut list = SinglyLinkedList::<T>::new();
+        let mut reversed = SinglyLinkedList::<T>::new();
 
-        loop {
-            match self.head {
-                Some(_) => list.push_front(self.pop_front().unwrap()),
-                None => break
-            }
+        while let Some(node) = self.pop_front() {
+            reversed.push_front(node);
         }
 
-        mem::replace(&mut self.head, list.head);
+        mem::swap(self, &mut reversed);
+    }
+}
+
+// Yay for stack overflow
+// The default destructor was a recursive function, which overflows for large lists
+impl<T> Drop for SinglyLinkedList<T> {
+    fn drop(&mut self) {
+        let mut current = mem::replace(&mut self.head, None);
+        while let Some(node) = current {
+            current = node.pointer;
+        }
     }
 }

@@ -203,7 +203,7 @@ mod bonus {
         use super::super::{Stack,SinglyLinkedList};
 
         #[test]
-        #[ignore]
+        // #[ignore]
         fn wat() {
             let mut s = SinglyLinkedList::new();
             let magic = 1 * 1024 * 1024;
