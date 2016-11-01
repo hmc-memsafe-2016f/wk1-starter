@@ -1,4 +1,4 @@
-// Alex Ozdemir <aozdemir@hmc.edu> // <- Your name should replace this line!
+// Dan Obermiller <dobermiller16@cmc.edu> // <- Your name should replace this line!
 // Starter code for HMC's MemorySafe, week 1
 //
 // The implementation of SinglyLinkedList
@@ -50,28 +50,24 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
     fn len(&self) -> usize { self.size }
 
     fn remove_first(&mut self, item: &T) -> Option<T> {
-        let mut list = SinglyLinkedList::new();
-        let mut result = None;
-        let mut result_found = false;
+        let ref mut current = self.head;
+        let mut previous: Option<Box<Node<T>>> = None;
 
         loop {
-            match self.head.take() {
-                Some(ref n) => {
-                    if !result_found && n.data == *item {
-                        result = self.pop_front();
-                        result_found = true;
-                    } else {
-                        list.push_front(self.pop_front().unwrap());
+            match current.take() {
+                Some(n) => {
+                    let unwrapped = *n;
+                    if unwrapped.data == *item {
+                        let ref mut prev_unwrapped = *previous.unwrap();
+                        mem::replace(&mut prev_unwrapped.pointer, unwrapped.pointer);
+                        return Some(unwrapped.data);
                     }
+
+                    mem::replace(&mut previous, mem::replace(current, unwrapped.pointer));
                 },
-                None => break
+                None => return None
             }
         }
-
-        list.reverse();
-        mem::swap(&mut self.head, &mut list.head);
-
-        result
     }
 
     fn reverse(&mut self) {
@@ -84,6 +80,6 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
             }
         }
 
-        mem::swap(&mut self.head, &mut list.head);
+        mem::replace(&mut self.head, list.head);
     }
 }
