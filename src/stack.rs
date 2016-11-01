@@ -39,14 +39,32 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
 
     fn len(&self) -> usize { self.size }
 
+    fn reverse(&mut self) {
+        use std::mem;
+        let mut current = self.first.take();
+        let mut prev = None;
+        loop {
+            // following is now current's next (taking ownership)
+            // and current now points to prev
+            let following = current.as_mut().and_then(
+                |ref mut node| mem::replace(&mut node.next, prev));
+            if following.is_none() { break; }
+            // update for next iteration of loop
+            prev = current;
+            current = following;
+        }
+        self.first = current;
+    }
+
     fn remove_first(&mut self, item : &T) -> Option<T> {
         unimplemented!(); // commented out impl so my submission would compile
         /*
         use std::mem;
-        // make sure the first isn't something we should remove
+        // todo: special case the first node, remove if need be
+
         let mut current = &self.first;
         loop {
-            match current.as_mut() {
+            match current.as_mut() { // use a map here instead?
                 Some(ref mut node) => {
                     // trying to take ownership and give it back if it isn't the
                     // first node that has a payload equal to item
@@ -68,22 +86,4 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
         }
         */
     }
-
-    fn reverse(&mut self) {
-        use std::mem;
-        let mut current = self.first.take();
-        let mut prev = None;
-        loop {
-            // following is now current's next (taking ownership)
-            // and current now points to prev
-            let following = current.as_mut().and_then(
-                |ref mut node| mem::replace(&mut node.next, prev));
-            if following.is_none() { break; }
-            // update for next iteration of loop
-            prev = current;
-            current = following;
-        }
-        self.first = current;
-    }
 }
-
