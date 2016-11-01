@@ -12,16 +12,18 @@ pub struct Node<T> {
 }
 
 pub struct SinglyLinkedList<T> {
-    first : Option<Box<Node<T>>>
+    first : Option<Box<Node<T>>>,
+    size : usize
 }
 
 impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
     fn new() -> Self 
     {
-        SinglyLinkedList{first: None}
+        SinglyLinkedList{first: None, size: 0}
     }
     fn push_front(&mut self, item: T)
     {
+        self.size += 1;
         let next_node = match self.first.take() {
             None => None,
             Some(d) => Some(d)
@@ -32,7 +34,9 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
     {
         match self.first.take() {
             None => None,
-            Some(mut d) => {self.first = mem::replace(&mut d.next, None); Some(d.data)}
+            Some(mut d) => {self.first = mem::replace(&mut d.next, None);
+                            self.size -= 1;
+                            Some(d.data)}
         }
     }
     fn peek_front(&self) -> Option<&T>
@@ -42,5 +46,8 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
             Some(ref d) => Some(& d.data) // why do I need the & here since I already said ref?
         }
     }
-    fn len(&self) -> usize {unimplemented!()}
+    fn len(&self) -> usize
+    {
+        self.size
+    }
 }
