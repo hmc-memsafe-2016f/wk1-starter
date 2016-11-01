@@ -1,5 +1,5 @@
-// Alex Ozdemir <aozdemir@hmc.edu> // <- Your name should replace this line!
-// Starter code for HMC's MemorySafe, week 1
+// Zach Hauser <zachary.hauser@pomona.edu>
+// Submission for HMC's MemorySafe, week 1
 //
 // The trait Stack, and a re-export of SinglyLinkedList, which implements it
 
@@ -9,7 +9,7 @@ mod stack;
 pub use stack::SinglyLinkedList;
 
 pub trait Stack<T> {
-    fn new() -> Self;
+    fn new() -> Self; 
     fn push_front(&mut self, item: T);
     fn pop_front(&mut self) -> Option<T>;
     fn peek_front(&self) -> Option<&T>;

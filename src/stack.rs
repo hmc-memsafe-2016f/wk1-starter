@@ -4,16 +4,37 @@
 // The implementation of SinglyLinkedList
 
 use Stack;
-use std::mem;
+use std::fmt::Debug;
 
 pub struct SinglyLinkedList<T> {
-    head: Option<Node<T>>,
+    head: Option<Box<Node<T>>>,
     size: usize
 }
 
 struct Node<T> {
     item : T,
-    next: Option<Box<Node<T>>>,
+    next: Option<Box<Node<T>>>
+}
+
+impl <T: Debug> SinglyLinkedList<T> {
+
+    fn print_rec(node: &Node<T>) {
+        println!("{:?}", node.item);
+        match &node.next {
+            &None => (),
+            &Some(ref boxed_next) => SinglyLinkedList::print_rec(&*boxed_next)
+        }
+    }
+
+    pub fn print(&self) {
+        println!("=== Size: {} ===", self.size);
+        match &self.head {
+            &None => (),
+            &Some(ref head) => SinglyLinkedList::print_rec(&*head)
+        };
+        println!("===")
+    }
+
 }
 
 impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
@@ -24,40 +45,47 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
 
     fn push_front(&mut self, item: T) {
         self.size += 1;
-        let mut node = Node { item: item, next: None };
-        if self.head.is_some() {
-            node.next = self.head.take().map(Box::new);
-            self.head = Some(node)
-        } else {
-            self.head = Some(node)
-        };
+        self.head = Some(Box::new(Node { item: item, next: self.head.take() }));
     }
 
     fn pop_front(&mut self) -> Option<T> {
-        let (next, result) = match self.head.take() {
-            None => (None, None),
-            Some(head) => {
-                self.size += 1; 
-                (head.next.map(|next| *next), Some(head.item))
+        match self.head.take() {
+            None => None,
+            Some(mut boxed_head) => {
+                self.size -= 1; 
+                self.head = boxed_head.next.take();
+                Some(boxed_head.item)
             }
-        };
-        self.head = next;
-        result 
+        }
     }
 
     fn peek_front(&self) -> Option<&T> {
-        match self.head {
-            None => None,
-            Some(ref head) => Some(&head.item)
-        }
+        self.head.as_ref().map(|node| &node.item)
     }
 
     fn len(&self) -> usize {
         self.size
     }
 
+    fn remove_first(&mut self, target: &T) -> Option<T> {
+        None
+    }
+
+    
     fn reverse(&mut self) { 
-        
+        if self.head.is_none() {
+            return
+        }
+        let mut node = *self.head.take().unwrap();
+        let mut prev = None;
+        while let Some(boxed_next) = node.next {
+            let next = *boxed_next;
+            node.next = prev;
+            prev = Some(Box::new(node));
+            node = next;
+        }
+        node.next = prev;
+        self.head = Some(Box::new(node));
     }
 
 }
