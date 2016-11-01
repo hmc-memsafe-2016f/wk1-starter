@@ -35,6 +35,12 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
             Some(mut d) => {self.first = mem::replace(&mut d.next, None); Some(d.data)}
         }
     }
-    fn peek_front(&self) -> Option<&T> {unimplemented!()}
+    fn peek_front(&self) -> Option<&T>
+    {
+        match self.first {
+            None => None,
+            Some(ref d) => Some(& d.data) // why do I need the & here since I already said ref?
+        }
+    }
     fn len(&self) -> usize {unimplemented!()}
 }
