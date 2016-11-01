@@ -1,4 +1,4 @@
-// Alex Ozdemir <aozdemir@hmc.edu> // <- Your name should replace this line!
+// Michael Sheely <msheely@hmc.edu>
 // Starter code for HMC's MemorySafe, week 1
 //
 // The trait Stack, and a re-export of SinglyLinkedList, which implements it
@@ -14,6 +14,6 @@ pub trait Stack<T> {
     fn pop_front(&mut self) -> Option<T>;
     fn peek_front(&self) -> Option<&T>;
     fn len(&self) -> usize;
-    fn remove_first(&mut self, _: &T) -> Option<T> { None }
-    fn reverse(&mut self) { }
+    fn reverse(&mut self);
+    fn remove_first(&mut self, _: &T) -> Option<T>;
 }
