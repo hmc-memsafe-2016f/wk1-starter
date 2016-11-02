@@ -1,6 +1,6 @@
 [package]
 name = "wk1"
 version = "0.1.0"
-authors = ["Alex Ozdemir <aozdemir@hmc.edu>"]
+authors = ["Alex Ozdemir <aozdemir@hmc.edu>, Julien Chien <jchien17@cmc.edu>"]
 
 [dependencies]
