@@ -19,11 +19,8 @@ pub struct SinglyLinkedList<T: Eq> {
 fn remove_first<T: Eq>(link: Link<T>, item: &T) -> (Link<T>, Option<T>) {
     link.map_or((None, None), |mut node| {
         if *item == node.data {
-            // See the comment in `pop_front` for why we need to `take` here
             (node.next.take(), Some(node.data))
         } else {
-            // While less obvious, we need to use `take` here for the same
-            // reason as in `pop_front` and above
             let (new_next, removed) = remove_first(node.next.take(), item);
             node.next = new_next;
             (Some(node), removed)
@@ -48,21 +45,12 @@ impl<T: Eq> Stack<T> for SinglyLinkedList<T> {
     }
 
     fn peek_front(&self) -> Option<&T> {
-        // Good question: Why `as_ref`?
         self.head.as_ref().map(|ref node| &node.data)
     }
 
     fn pop_front(&mut self) -> Option<T> {
         self.head.take().map(|mut node| {
             self.len -= 1;
-            // We really just want to move the two members of the node to
-            // different locations, but (as of May 2016) borrowck sees
-            // movement of any member as movement of whole, so this is not
-            // possible. `take` allows us to get the value of node.next by
-            // replacing it with None, so it doesn't count as a move.
-            //
-            // Fragment analysis in borrowck will allow separate movement
-            // of members. Soon plz.
             self.head = node.next.take();
             node.data
         })
