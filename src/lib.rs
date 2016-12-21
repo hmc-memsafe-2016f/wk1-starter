@@ -15,5 +15,5 @@ pub trait Stack<T> {
     fn peek_front(&self) -> Option<&T>;
     fn len(&self) -> usize;
     fn remove_first(&mut self, _: &T) -> Option<T> { None }
-    fn reverse(&mut self) { }
+    fn reverse(&mut self) {}
 }
