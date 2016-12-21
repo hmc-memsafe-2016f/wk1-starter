@@ -133,6 +133,7 @@ mod bonus {
         use super::super::{NoCopy,Stack,SinglyLinkedList};
 
         #[test]
+        #[ignore]
         fn push1_remove1() {
             let mut s = SinglyLinkedList::new();
             s.push_front(NoCopy(1));
@@ -141,6 +142,7 @@ mod bonus {
         }
 
         #[test]
+        #[ignore]
         fn push1_push1_remove1_remove1_remove1() {
             let mut s = SinglyLinkedList::new();
             s.push_front(NoCopy(1));
@@ -154,6 +156,7 @@ mod bonus {
         }
 
         #[test]
+        #[ignore]
         fn push1_push2_remove1() {
             let mut s = SinglyLinkedList::new();
             s.push_front(NoCopy(1));
@@ -165,6 +168,7 @@ mod bonus {
         }
 
         #[test]
+        #[ignore]
         fn push1_push2_remove3() {
             let mut s = SinglyLinkedList::new();
             s.push_front(NoCopy(1));
@@ -178,6 +182,7 @@ mod bonus {
         use super::super::{NoCopy,Stack,SinglyLinkedList};
 
         #[test]
+        #[ignore]
         fn reverse_1() {
             let mut s = SinglyLinkedList::new();
             s.push_front(NoCopy(1));
@@ -186,6 +191,7 @@ mod bonus {
         }
 
         #[test]
+        #[ignore]
         fn reverse_many() {
             let mut s = SinglyLinkedList::new();
             for i in 0..100 {
